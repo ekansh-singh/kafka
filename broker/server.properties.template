@@ -1,0 +1,54 @@
+############################# Server Basics #############################
+
+# The id of the broker. This must be set to a unique integer for each broker.
+broker.id=__BROKER_ID__
+# change your.host.name by your machine's IP or hostname
+advertised.listeners=__BROKER_ADVERTISED_LISTENERS__
+
+# Switch to enable topic deletion or not, default value is false
+delete.topic.enable=__BROKER_DELETE_TOPIC_ENABLE__
+
+############################# Log Basics #############################
+
+# A comma seperated list of directories under which to store log files
+log.dirs=__BROKER_LOG_DIRS__
+
+# The default number of log partitions per topic. More partitions allow greater
+# parallelism for consumption, but this will also result in more files across
+# the brokers.
+num.partitions=__BROKER_DEFAULT_NO_OF_PARTITION__
+# we will have 3 brokers so the default replication factor should be 2 or 3
+default.replication.factor=__BROKER_DEFAULT_REPLICATION_FACTOR__
+# number of ISR to have in order to minimize data loss
+min.insync.replicas=__BROKER_MIN_INSYNC_REPLICAS__
+
+############################# Log Retention Policy #############################
+
+# The minimum age of a log file to be eligible for deletion due to age
+# this will delete data after a week
+log.retention.hours=__BROKER_LOG_RETENTION_HOURS__
+
+# The maximum size of a log segment file. When this size is reached a new log segment will be created.
+log.segment.bytes=__BROKER_LOG_SEGMENT_BYTES__
+
+# The interval at which log segments are checked to see if they can be deleted according
+# to the retention policies
+log.retention.check.interval.ms=__BROKER_LOG_RETENTION_CHECK_INTERVAL_MS__
+
+############################# Zookeeper #############################
+
+# Zookeeper connection string (see zookeeper docs for details).
+# This is a comma separated host:port pairs, each corresponding to a zk
+# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+# You can also append an optional chroot string to the urls to specify the
+# root directory for all kafka znodes.
+zookeeper.connect=__BROKER_ZOOKEEPER_CONNECT_STRING__
+
+# Timeout in ms for connecting to zookeeper
+zookeeper.connection.timeout.ms=__BROKER_ZOOKEEPER_CONNECTION_TIMEOUT_MS__
+
+
+############################## Other ##################################
+# I recommend you set this to false in production.
+# We'll keep it as true for the course
+auto.create.topics.enable=__BROKER_AUTO_CREATE_TOPICS_ENABLE__

@@ -1,0 +1,6 @@
+dataDir=__ZK_DATA_DIR__
+clientPort=__ZK_CLIENT_PORT__
+maxClientCnxns=__ZK_MAX_CLIENT_CNXNS__
+tickTime=__ZK_TICK_TIME__
+initLimit=__ZK_INIT_LIMIT__
+syncLimit=__ZK_SYNC_LIMIT__

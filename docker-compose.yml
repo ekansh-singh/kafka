@@ -1,0 +1,102 @@
+version: "2.2"
+services:
+    zookeeper1:
+        image: zk:latest
+        container_name: zookeeper1
+        environment: 
+            __ZK_ID__: 1
+            ZK_NODES: zookeeper1:2888:3888 zookeeper2:2888:3888 zookeeper3:2888:3888
+        ports: 
+            - "2181:2181"
+            - "2888"
+            - "3888"
+    zookeeper2:
+        image: zk:latest
+        container_name: zookeeper2
+        environment: 
+            __ZK_ID__: 2
+            ZK_NODES: zookeeper1:2888:3888 zookeeper2:2888:3888 zookeeper3:2888:3888
+        ports: 
+            - "2182:2181"
+            - "2888"
+            - "3888"
+    zookeeper3:
+        image: zk:latest
+        container_name: zookeeper3
+        environment: 
+            __ZK_ID__: 3
+            ZK_NODES: zookeeper1:2888:3888 zookeeper2:2888:3888 zookeeper3:2888:3888
+        ports: 
+            - "2183:2181"
+            - "2888"
+            - "3888"
+    web:
+        image: elkozmon/zoonavigator-web:latest
+        container_name: zoonavigator-web
+        environment:
+            API_HOST: "api"
+            API_PORT: 9001
+            SERVER_HTTP_PORT: 8001
+            AUTO_CONNECT_CONNECTION_STRING: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
+        depends_on:
+            - api
+        ports: 
+            - "8001:8001"
+        restart: always
+    api:
+        image: elkozmon/zoonavigator-api:latest
+        container_name: zoonavigator-api
+        environment:
+            SERVER_HTTP_PORT: 9001
+        restart: always
+    broker1:
+        image: broker:latest
+        container_name: broker1
+        depends_on: 
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        environment:
+            __BROKER_ID__: 1
+            __BROKER_ADVERTISED_LISTENERS__: PLAINTEXT://broker1:9092
+            __BROKER_DEFAULT_REPLICATION_FACTOR__: 3
+            __BROKER_MIN_INSYNC_REPLICAS__: 2
+            __BROKER_ZOOKEEPER_CONNECT_STRING__: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
+        ports: 
+            - "9092:9092"
+    broker2:
+        image: broker:latest
+        container_name: broker2
+        depends_on: 
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        environment:
+            __BROKER_ID__: 2
+            __BROKER_ADVERTISED_LISTENERS__: PLAINTEXT://broker2:9092
+            __BROKER_DEFAULT_REPLICATION_FACTOR__: 3
+            __BROKER_MIN_INSYNC_REPLICAS__: 2
+            __BROKER_ZOOKEEPER_CONNECT_STRING__: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
+        ports: 
+            - "9093:9092"
+    broker3:
+        image: broker:latest
+        container_name: broker3
+        depends_on: 
+            - zookeeper1
+            - zookeeper2
+            - zookeeper3
+        environment:
+            __BROKER_ID__: 3
+            __BROKER_ADVERTISED_LISTENERS__: PLAINTEXT://broker3:9092
+            __BROKER_DEFAULT_REPLICATION_FACTOR__: 3
+            __BROKER_MIN_INSYNC_REPLICAS__: 2
+            __BROKER_ZOOKEEPER_CONNECT_STRING__: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
+        ports: 
+            - "9094:9092"
+    client1:
+        image: kafka:base
+        container_name: client1
+        command: tail -f /dev/null
+        environment:
+            ZK_STRING: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
